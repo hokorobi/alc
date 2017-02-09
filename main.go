@@ -115,5 +115,14 @@ func main() {
 		})
 	})
 
+	doc.Find("#sas_word").Each(func(i int, sas *goquery.Selection) {
+		fmt.Fprintln(stdOut, "Suggestion:")
+		l := []string{}
+		sas.Find("span > a").Each(func(_i int, w *goquery.Selection) {
+			l = append(l, w.Text())
+		})
+		fmt.Fprintln(stdOut, "\t"+BLUE+strings.Join(l, ", ")+END)
+	})
+
 	stdOut.Flush()
 }
