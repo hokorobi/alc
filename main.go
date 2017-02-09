@@ -8,6 +8,7 @@ import (
 	"github.com/mattn/go-colorable"
 	"io"
 	"net/url"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -41,7 +42,7 @@ func displayContent(w io.Writer, content *goquery.Selection) {
 }
 
 var opts struct {
-	Word  string `positional-arg-name:"word"`
+	Word  string `description:"search word"`
 	Range string `long:"range" short:"r" description:"range of showing" default:"1:3"`
 }
 
@@ -54,6 +55,11 @@ func main() {
 
 	args, err := parser.Parse()
 	if err != nil {
+		return
+	}
+
+	if len(args) < 1 {
+		parser.WriteHelp(os.Stdout)
 		return
 	}
 
