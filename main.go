@@ -27,16 +27,19 @@ const (
 )
 
 func displayContent(w io.Writer, content *goquery.Selection) {
-	if content.Is("ol") || content.Is("ul") {
-		li := content.Find("li")
-		if li.Size() > 0 {
-			li.Each(func(i int, l *goquery.Selection) {
-				fmt.Fprintln(w, GREY+strconv.Itoa(i+1)+"."+END+" "+l.Text())
+	li := content.Find("ol > li, ul > li")
+	if li.Size() > 0 {
+		li.Each(func(i int, l *goquery.Selection) {
+			idx := strconv.Itoa(i + 1)
+			l.Find("br").Each(func(_ int, ex *goquery.Selection) {
+				ex.ReplaceWithHtml("\n" + strings.Repeat(" ", len(idx+". ")))
 			})
-		} else {
-			fmt.Fprintln(w, content.Text())
-		}
+			fmt.Fprintln(w, GREY+idx+"."+END+" "+l.Text())
+		})
 	} else {
+		content.Find("br").Each(func(_ int, ex *goquery.Selection) {
+			ex.ReplaceWithHtml("\n")
+		})
 		fmt.Fprintln(w, content.Text())
 	}
 }
